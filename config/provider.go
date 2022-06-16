@@ -22,13 +22,13 @@ import (
 
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
-	"github.com/crossplane-contrib/provider-jet-template/config/null"
+	"github.com/maxnovawind/provider-jet-keycloak/config/group"
+	"github.com/maxnovawind/provider-jet-keycloak/config/openidclient"
 )
 
 const (
-	resourcePrefix = "template"
-	modulePath     = "github.com/crossplane-contrib/provider-jet-template"
+	resourcePrefix = "keycloak"
+	modulePath     = "github.com/maxnovawind/provider-jet-keycloak"
 )
 
 //go:embed schema.json
@@ -37,18 +37,23 @@ var providerSchema string
 // GetProvider returns provider configuration
 func GetProvider() *tjconfig.Provider {
 	defaultResourceFn := func(name string, terraformResource *schema.Resource, opts ...tjconfig.ResourceOption) *tjconfig.Resource {
-		r := tjconfig.DefaultResource(name, terraformResource)
 		// Add any provider-specific defaulting here. For example:
 		//   r.ExternalName = tjconfig.IdentifierFromProvider
+		r := tjconfig.DefaultResource(name, terraformResource)
 		return r
 	}
 
 	pc := tjconfig.NewProviderWithSchema([]byte(providerSchema), resourcePrefix, modulePath,
-		tjconfig.WithDefaultResourceFn(defaultResourceFn))
+		tjconfig.WithDefaultResourceFn(defaultResourceFn),
+		tjconfig.WithIncludeList([]string{
+			"keycloak_group$",
+			"keycloak_openid_client$",
+		}))
 
 	for _, configure := range []func(provider *tjconfig.Provider){
 		// add custom config functions
-		null.Configure,
+		group.Configure,
+		openidclient.Configure,
 	} {
 		configure(pc)
 	}

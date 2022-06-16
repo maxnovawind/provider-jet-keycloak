@@ -19,6 +19,7 @@ package clients
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	"github.com/pkg/errors"
@@ -27,7 +28,7 @@ import (
 
 	"github.com/crossplane/terrajet/pkg/terraform"
 
-	"github.com/crossplane-contrib/provider-jet-template/apis/v1alpha1"
+	"github.com/maxnovawind/provider-jet-keycloak/apis/v1alpha1"
 )
 
 const (
@@ -36,7 +37,19 @@ const (
 	errGetProviderConfig    = "cannot get referenced ProviderConfig"
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
-	errUnmarshalCredentials = "cannot unmarshal template credentials as JSON"
+	errUnmarshalCredentials = "cannot unmarshal keycloak credentials as JSON"
+)
+
+const (
+	keyBaseURL               = "url"
+	keyClientID              = "client_id"
+	keyClientSecret          = "client_secret"
+	keyTLSInsecureSkipVerify = "tls_insecure_skip_verify"
+
+	// keycloak credentials environment variable names
+	// envKeycloakClientID     = "KEYCLOAK_CLIENT_ID"
+
+	envKeycloakClientSecret = "KEYCLOAK_CLIENT_SECRET"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
@@ -69,9 +82,25 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if err != nil {
 			return ps, errors.Wrap(err, errExtractCredentials)
 		}
-		templateCreds := map[string]string{}
-		if err := json.Unmarshal(data, &templateCreds); err != nil {
+		keycloakCreds := map[string]string{}
+		if err := json.Unmarshal(data, &keycloakCreds); err != nil {
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
+		}
+
+		// set provider configuration
+		ps.Configuration = map[string]interface{}{}
+		if v, ok := keycloakCreds[keyBaseURL]; ok {
+			ps.Configuration[keyBaseURL] = v
+		}
+		if v, ok := keycloakCreds[keyClientID]; ok {
+			ps.Configuration[keyClientID] = v
+		}
+		if v, ok := keycloakCreds[keyClientID]; ok {
+			ps.Configuration[keyTLSInsecureSkipVerify] = v
+		}
+		// set environment variables for sensitive provider configuration
+		ps.Env = []string{
+			fmt.Sprintf("%s=%s", envKeycloakClientSecret, keycloakCreds[keyClientSecret]),
 		}
 
 		// set environment variables for sensitive provider configuration
@@ -79,13 +108,13 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		// credentials via the environment variables. You should specify
 		// credentials via the Terraform main.tf.json instead.
 		/*ps.Env = []string{
-			fmt.Sprintf("%s=%s", "HASHICUPS_USERNAME", templateCreds["username"]),
-			fmt.Sprintf("%s=%s", "HASHICUPS_PASSWORD", templateCreds["password"]),
+			fmt.Sprintf("%s=%s", "HASHICUPS_USERNAME", keycloakCreds["username"]),
+			fmt.Sprintf("%s=%s", "HASHICUPS_PASSWORD", keycloakCreds["password"]),
 		}*/
 		// set credentials in Terraform provider configuration
 		/*ps.Configuration = map[string]interface{}{
-			"username": templateCreds["username"],
-			"password": templateCreds["password"],
+			"username": keycloakCreds["username"],
+			"password": keycloakCreds["password"],
 		}*/
 		return ps, nil
 	}

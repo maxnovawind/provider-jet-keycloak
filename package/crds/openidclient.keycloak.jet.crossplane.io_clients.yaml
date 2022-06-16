@@ -5,18 +5,18 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: resources.null.template.jet.crossplane.io
+  name: clients.openidclient.keycloak.jet.crossplane.io
 spec:
-  group: null.template.jet.crossplane.io
+  group: openidclient.keycloak.jet.crossplane.io
   names:
     categories:
     - crossplane
     - managed
-    - templatejet
-    kind: Resource
-    listKind: ResourceList
-    plural: resources
-    singular: resource
+    - keycloakjet
+    kind: Client
+    listKind: ClientList
+    plural: clients
+    singular: client
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -35,7 +35,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Resource is the Schema for the Resources API
+        description: Client is the Schema for the Clients API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -50,7 +50,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ResourceSpec defines the desired state of Resource
+            description: ClientSpec defines the desired state of Client
             properties:
               deletionPolicy:
                 default: Delete
@@ -63,13 +63,134 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  triggers:
+                  accessTokenLifespan:
+                    type: string
+                  accessType:
+                    type: string
+                  adminUrl:
+                    type: string
+                  authenticationFlowBindingOverrides:
+                    items:
+                      properties:
+                        browserId:
+                          type: string
+                        directGrantId:
+                          type: string
+                      type: object
+                    type: array
+                  authorization:
+                    items:
+                      properties:
+                        allowRemoteResourceManagement:
+                          type: boolean
+                        decisionStrategy:
+                          type: string
+                        keepDefaults:
+                          type: boolean
+                        policyEnforcementMode:
+                          type: string
+                      required:
+                      - policyEnforcementMode
+                      type: object
+                    type: array
+                  backchannelLogoutRevokeOfflineSessions:
+                    type: boolean
+                  backchannelLogoutSessionRequired:
+                    type: boolean
+                  backchannelLogoutUrl:
+                    type: string
+                  baseUrl:
+                    type: string
+                  clientAuthenticatorType:
+                    type: string
+                  clientId:
+                    type: string
+                  clientOfflineSessionIdleTimeout:
+                    type: string
+                  clientOfflineSessionMaxLifespan:
+                    type: string
+                  clientSecretSecretRef:
+                    description: A SecretKeySelector is a reference to a secret key
+                      in an arbitrary namespace.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  clientSessionIdleTimeout:
+                    type: string
+                  clientSessionMaxLifespan:
+                    type: string
+                  consentRequired:
+                    type: boolean
+                  consentScreenText:
+                    type: string
+                  description:
+                    type: string
+                  directAccessGrantsEnabled:
+                    type: boolean
+                  displayOnConsentScreen:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  excludeSessionStateFromAuthResponse:
+                    type: boolean
+                  extraConfig:
                     additionalProperties:
                       type: string
-                    description: A map of arbitrary strings that, when changed, will
-                      force the null resource to be replaced, re-running any associated
-                      provisioners.
                     type: object
+                  frontchannelLogoutEnabled:
+                    type: boolean
+                  frontchannelLogoutUrl:
+                    type: string
+                  fullScopeAllowed:
+                    type: boolean
+                  implicitFlowEnabled:
+                    type: boolean
+                  loginTheme:
+                    type: string
+                  oauth2DeviceAuthorizationGrantEnabled:
+                    type: boolean
+                  oauth2DeviceCodeLifespan:
+                    type: string
+                  oauth2DevicePollingInterval:
+                    type: string
+                  pkceCodeChallengeMethod:
+                    type: string
+                  realmId:
+                    type: string
+                  rootUrl:
+                    type: string
+                  serviceAccountsEnabled:
+                    type: boolean
+                  standardFlowEnabled:
+                    type: boolean
+                  useRefreshTokens:
+                    type: boolean
+                  useRefreshTokensClientCredentials:
+                    type: boolean
+                  validRedirectUris:
+                    items:
+                      type: string
+                    type: array
+                  webOrigins:
+                    items:
+                      type: string
+                    type: array
+                required:
+                - accessType
+                - clientId
+                - realmId
                 type: object
               providerConfigRef:
                 default:
@@ -168,11 +289,15 @@ spec:
             - forProvider
             type: object
           status:
-            description: ResourceStatus defines the observed state of Resource.
+            description: ClientStatus defines the observed state of Client.
             properties:
               atProvider:
                 properties:
                   id:
+                    type: string
+                  resourceServerId:
+                    type: string
+                  serviceAccountUserId:
                     type: string
                 type: object
               conditions:
