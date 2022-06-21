@@ -1,0 +1,15 @@
+apiVersion: openid.keycloak.jet.crossplane.io/v1alpha2
+kind: Client
+metadata:
+  name: crossplane
+spec:
+  forProvider:
+    realmId: "your-org"
+    name: crossplane
+    accessType: "CONFIDENTIAL"
+    clientId: "crossplane-webui"
+  writeConnectionSecretToRef:
+    name: "crossplane-webui"
+    namespace: "crossplane-system"
+
+

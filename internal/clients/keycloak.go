@@ -48,14 +48,23 @@ const (
 
 	// keycloak credentials environment variable names
 	// envKeycloakClientID     = "KEYCLOAK_CLIENT_ID"
-
+	envKeycloakURL          = "KEYCLOAK_URL"
 	envKeycloakClientSecret = "KEYCLOAK_CLIENT_SECRET"
+	envKeycloakClientID     = "KEYCLOAK_CLIENT_ID"
 )
+
+type keycloakCreds struct {
+	URL                   string `json:"url"`
+	ClientID              string `json:"client_id"`
+	ClientSecret          string `json:"client_secret"`
+	TLSInsecureSkipVerify bool   `json:"tls_insecure_skip_verify"`
+}
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
 // returns Terraform provider setup configuration
 func TerraformSetupBuilder(version, providerSource, providerVersion string) terraform.SetupFn {
 	return func(ctx context.Context, client client.Client, mg resource.Managed) (terraform.Setup, error) {
+		var keyCreds keycloakCreds
 		ps := terraform.Setup{
 			Version: version,
 			Requirement: terraform.ProviderRequirement{
@@ -82,25 +91,26 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if err != nil {
 			return ps, errors.Wrap(err, errExtractCredentials)
 		}
-		keycloakCreds := map[string]string{}
-		if err := json.Unmarshal(data, &keycloakCreds); err != nil {
+
+		if err := json.Unmarshal(data, &keyCreds); err != nil {
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
 		}
 
 		// set provider configuration
+
 		ps.Configuration = map[string]interface{}{}
-		if v, ok := keycloakCreds[keyBaseURL]; ok {
-			ps.Configuration[keyBaseURL] = v
+		ps.Configuration = map[string]interface{}{
+			keyBaseURL:               keyCreds.URL,
+			keyClientID:              keyCreds.ClientID,
+			keyClientSecret:          keyCreds.ClientSecret,
+			keyTLSInsecureSkipVerify: keyCreds.TLSInsecureSkipVerify,
 		}
-		if v, ok := keycloakCreds[keyClientID]; ok {
-			ps.Configuration[keyClientID] = v
-		}
-		if v, ok := keycloakCreds[keyClientID]; ok {
-			ps.Configuration[keyTLSInsecureSkipVerify] = v
-		}
+
 		// set environment variables for sensitive provider configuration
 		ps.Env = []string{
-			fmt.Sprintf("%s=%s", envKeycloakClientSecret, keycloakCreds[keyClientSecret]),
+			fmt.Sprintf("%s=%s", envKeycloakURL, keyCreds.URL),
+			fmt.Sprintf("%s=%s", envKeycloakClientID, keyCreds.ClientID),
+			fmt.Sprintf("%s=%s", envKeycloakClientSecret, keyCreds.ClientSecret),
 		}
 
 		// set environment variables for sensitive provider configuration

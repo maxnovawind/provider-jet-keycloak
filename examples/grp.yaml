@@ -1,0 +1,8 @@
+apiVersion: group.keycloak.jet.crossplane.io/v1alpha2
+kind: Group
+metadata:
+  name: crossplane-grp
+spec:
+  forProvider:
+    realmId: "your-org"
+    name: crossplane-grp

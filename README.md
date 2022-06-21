@@ -10,7 +10,7 @@ Keycloak API.
 Install the provider by using the following command after changing the image tag
 to the [latest release](https://github.com/maxnovawind/provider-jet-keycloak/releases):
 ```
-kubectl crossplane install provider crossplane/provider-jet-keycloak:v0.1.0
+kubectl crossplane install provider crossplane/provider-jet-keycloak:v0.0.2
 ```
 
 Alternatively, you can use declarative installation:

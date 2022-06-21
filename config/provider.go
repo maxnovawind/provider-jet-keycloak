@@ -22,8 +22,8 @@ import (
 
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/maxnovawind/provider-jet-keycloak/config/group"
-	"github.com/maxnovawind/provider-jet-keycloak/config/openidclient"
+	"github.com/maxnovawind/provider-jet-keycloak/config/grp"
+	"github.com/maxnovawind/provider-jet-keycloak/config/openid"
 )
 
 const (
@@ -52,8 +52,8 @@ func GetProvider() *tjconfig.Provider {
 
 	for _, configure := range []func(provider *tjconfig.Provider){
 		// add custom config functions
-		group.Configure,
-		openidclient.Configure,
+		grp.Configure,
+		openid.Configure,
 	} {
 		configure(pc)
 	}

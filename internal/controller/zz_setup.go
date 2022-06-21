@@ -21,8 +21,8 @@ import (
 
 	"github.com/crossplane/terrajet/pkg/controller"
 
-	group "github.com/maxnovawind/provider-jet-keycloak/internal/controller/group/group"
-	client "github.com/maxnovawind/provider-jet-keycloak/internal/controller/openidclient/client"
+	group "github.com/maxnovawind/provider-jet-keycloak/internal/controller/grp/group"
+	client "github.com/maxnovawind/provider-jet-keycloak/internal/controller/openid/client"
 	providerconfig "github.com/maxnovawind/provider-jet-keycloak/internal/controller/providerconfig"
 )
 

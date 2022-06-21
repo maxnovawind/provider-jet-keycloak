@@ -12,7 +12,7 @@ export TERRAFORM_PROVIDER_DOWNLOAD_NAME := terraform-provider-keycloak
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX := https://github.com/mrparkers/terraform-provider-keycloak/releases/download/v3.8.1
 export TERRAFORM_NATIVE_PROVIDER_BINARY := terraform-provider-keycloak_v3.8.1
 
-PLATFORMS ?= linux_amd64 linux_arm64
+PLATFORMS ?= linux_amd64
 
 # -include will silently skip missing files, which allows us
 # to load those files with a target in the Makefile. If only
@@ -51,7 +51,8 @@ GO111MODULE = on
 # ====================================================================================
 # Setup Images
 
-DOCKER_REGISTRY ?= crossplane
+#DOCKER_REGISTRY ?= crossplane
+DOCKER_REGISTRY ?= registry.gitlab.com/ica1/paas
 IMAGES = provider-jet-keycloak provider-jet-keycloak-controller
 -include build/makelib/image.mk
 

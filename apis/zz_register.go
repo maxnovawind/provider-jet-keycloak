@@ -22,17 +22,17 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/maxnovawind/provider-jet-keycloak/apis/group/v1alpha1"
-	v1alpha1openidclient "github.com/maxnovawind/provider-jet-keycloak/apis/openidclient/v1alpha1"
-	v1alpha1apis "github.com/maxnovawind/provider-jet-keycloak/apis/v1alpha1"
+	v1alpha2 "github.com/maxnovawind/provider-jet-keycloak/apis/grp/v1alpha2"
+	v1alpha2openid "github.com/maxnovawind/provider-jet-keycloak/apis/openid/v1alpha2"
+	v1alpha1 "github.com/maxnovawind/provider-jet-keycloak/apis/v1alpha1"
 )
 
 func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes,
+		v1alpha2.SchemeBuilder.AddToScheme,
+		v1alpha2openid.SchemeBuilder.AddToScheme,
 		v1alpha1.SchemeBuilder.AddToScheme,
-		v1alpha1openidclient.SchemeBuilder.AddToScheme,
-		v1alpha1apis.SchemeBuilder.AddToScheme,
 	)
 }
 

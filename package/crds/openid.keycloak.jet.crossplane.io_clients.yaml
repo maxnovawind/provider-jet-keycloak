@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: clients.openidclient.keycloak.jet.crossplane.io
+  name: clients.openid.keycloak.jet.crossplane.io
 spec:
-  group: openidclient.keycloak.jet.crossplane.io
+  group: openid.keycloak.jet.crossplane.io
   names:
     categories:
     - crossplane
@@ -32,7 +32,7 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: AGE
       type: date
-    name: v1alpha1
+    name: v1alpha2
     schema:
       openAPIV3Schema:
         description: Client is the Schema for the Clients API
@@ -158,6 +158,8 @@ spec:
                   implicitFlowEnabled:
                     type: boolean
                   loginTheme:
+                    type: string
+                  name:
                     type: string
                   oauth2DeviceAuthorizationGrantEnabled:
                     type: boolean
