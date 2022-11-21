@@ -45,6 +45,7 @@ const (
 	keyClientID              = "client_id"
 	keyClientSecret          = "client_secret"
 	keyTLSInsecureSkipVerify = "tls_insecure_skip_verify"
+	KeyRealm                 = "realm"
 
 	// keycloak credentials environment variable names
 	// envKeycloakClientID     = "KEYCLOAK_CLIENT_ID"
@@ -58,6 +59,7 @@ type keycloakCreds struct {
 	ClientID              string `json:"client_id"`
 	ClientSecret          string `json:"client_secret"`
 	TLSInsecureSkipVerify bool   `json:"tls_insecure_skip_verify"`
+	Realm                 string `json:"realm"`
 }
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
@@ -104,6 +106,7 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 			keyClientID:              keyCreds.ClientID,
 			keyClientSecret:          keyCreds.ClientSecret,
 			keyTLSInsecureSkipVerify: keyCreds.TLSInsecureSkipVerify,
+			KeyRealm:                 keyCreds.Realm,
 		}
 
 		// set environment variables for sensitive provider configuration
