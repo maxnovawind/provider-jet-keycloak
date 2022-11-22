@@ -23,6 +23,7 @@ import (
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/maxnovawind/provider-jet-keycloak/config/grp"
+	"github.com/maxnovawind/provider-jet-keycloak/config/mapper"
 	"github.com/maxnovawind/provider-jet-keycloak/config/openid"
 )
 
@@ -48,12 +49,14 @@ func GetProvider() *tjconfig.Provider {
 		tjconfig.WithIncludeList([]string{
 			"keycloak_group$",
 			"keycloak_openid_client$",
+			"keycloak_generic_client_protocol_mapper$",
 		}))
 
 	for _, configure := range []func(provider *tjconfig.Provider){
 		// add custom config functions
 		grp.Configure,
 		openid.Configure,
+		mapper.Configure,
 	} {
 		configure(pc)
 	}

@@ -22,6 +22,7 @@ import (
 	"github.com/crossplane/terrajet/pkg/controller"
 
 	group "github.com/maxnovawind/provider-jet-keycloak/internal/controller/grp/group"
+	clientprotocolmapper "github.com/maxnovawind/provider-jet-keycloak/internal/controller/mapper/clientprotocolmapper"
 	client "github.com/maxnovawind/provider-jet-keycloak/internal/controller/openid/client"
 	providerconfig "github.com/maxnovawind/provider-jet-keycloak/internal/controller/providerconfig"
 )
@@ -31,6 +32,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		group.Setup,
+		clientprotocolmapper.Setup,
 		client.Setup,
 		providerconfig.Setup,
 	} {

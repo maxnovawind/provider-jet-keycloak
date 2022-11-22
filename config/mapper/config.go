@@ -1,4 +1,4 @@
-package openid
+package mapper
 
 import (
 	"github.com/crossplane/terrajet/pkg/config"
@@ -7,19 +7,16 @@ import (
 
 // Configure configures individual resources by adding custom ResourceConfigurators.
 func Configure(p *config.Provider) {
-	p.AddResourceConfigurator("keycloak_openid_client", func(r *config.Resource) {
+	p.AddResourceConfigurator("keycloak_generic_client_protocol_mapper", func(r *config.Resource) {
 
 		// we need to override the default group that terrajet generated for
 		// this resource, which would be "github"
-		r.ShortGroup = "openid"
+		r.ShortGroup = "mapper"
 		r.ExternalName = config.IdentifierFromProvider
 		r.Version = common.VersionV1alpha2
-		r.Sensitive.AdditionalConnectionDetailsFn = func(attr map[string]interface{}) (map[string][]byte, error) {
-			conn := map[string][]byte{}
-			if a, ok := attr["client_secret"].(string); ok {
-				conn["keycloak_client_secret"] = []byte(a)
-			}
-			return conn, nil
+		r.References["client_id"] = config.Reference{
+			Type: "github.com/maxnovawind/provider-jet-keycloak/apis/openid/v1alpha2.Client",
 		}
+
 	})
 }
